@@ -13,7 +13,7 @@ document.getElementById("loginBtn").addEventListener("click", async function () 
                 timeout: 60000,
                 userVerification: "required",
                 rpId: window.location.hostname, // S'adapte au domaine actuel
-                allowCredentials: null // Empêche la demande de Passkey / QR Code
+                allowCredentials: [] // Utilise un tableau vide pour éviter le QR Code
             }
         });
 
