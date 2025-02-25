@@ -1,7 +1,8 @@
-// script.js
-async function authenticate() {
+document.getElementById("loginBtn").addEventListener("click", async function () {
+    const errorMessage = document.getElementById("errorMessage");
+
     if (!window.PublicKeyCredential) {
-        alert("Votre appareil ne supporte pas l'authentification biométrique.");
+        errorMessage.textContent = "Votre appareil ne supporte pas l'authentification biométrique.";
         return;
     }
 
@@ -10,7 +11,6 @@ async function authenticate() {
             publicKey: {
                 challenge: new Uint8Array(32),
                 timeout: 60000,
-                allowCredentials: [],
                 userVerification: "required",
                 rpId: window.location.hostname
             }
@@ -20,6 +20,7 @@ async function authenticate() {
             window.location.href = "https://pornn.com"; // Remplace par ton vrai site
         }
     } catch (error) {
-        alert("Échec de l'authentification : " + error.message);
+        console.error("Erreur d'authentification :", error);
+        errorMessage.textContent = "Échec de l'authentification : " + error.message;
     }
-}
+});
