@@ -9,23 +9,23 @@ document.getElementById("loginBtn").addEventListener("click", async function () 
     try {
         const credential = await navigator.credentials.get({
             publicKey: {
-                challenge: new Uint8Array(32), // Challenge aléatoire pour sécuriser l'authentification
+                challenge: new Uint8Array(32), // 🔐 Sécurise la requête
                 timeout: 60000,
                 userVerification: "required",
-                rpId: window.location.hostname, // Utiliser le domaine actuel
-                allowCredentials: [], // Empêcher la Passkey
-                authenticatorSelection: {
-                    authenticatorAttachment: "platform", // ✅ Utiliser l'appareil actuel
-                    requireResidentKey: false, // ✅ Ne pas stocker la clé (évite Passkey)
+                rpId: window.location.hostname,
+                allowCredentials: [], // ✅ Pas de Passkey existante requise
+                authenticatorSelection: { 
+                    authenticatorAttachment: "platform", // ✅ Forcer un appareil local
+                    residentKey: "discouraged", // ✅ Pas d'enregistrement de clé
                     userVerification: "required"
                 }
             },
-            mediation: "required" // ✅ Bloque le QR Code et force l'authentification locale
+            mediation: "optional" // ✅ Évite le QR Code et force l'authentification locale
         });
 
         if (credential) {
             alert("Authentification réussie !");
-            window.location.href = "https://ton-site.com"; // Redirection après succès
+            window.location.href = "https://ton-site.com"; // 🔄 Redirection après succès
         }
     } catch (error) {
         console.error("Erreur d'authentification :", error);
