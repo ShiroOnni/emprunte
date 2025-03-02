@@ -8,28 +8,32 @@ document.getElementById("loginBtn").addEventListener("click", async function () 
     }
 
     try {
+        // ✅ Utilise un challenge généré de manière sécurisée
+        const challenge = new Uint8Array(32);
+        window.crypto.getRandomValues(challenge);
+
         const credential = await navigator.credentials.get({
             publicKey: {
-                challenge: new Uint8Array(32),
+                challenge: challenge.buffer, // ✅ Utilise un ArrayBuffer valide
                 timeout: 60000,
                 userVerification: "required",
-                rpId: window.location.hostname, // Utilise automatiquement le bon domaine
-                allowCredentials: [{ // Empêche le QR Code en forçant l'appareil local
+                rpId: window.location.hostname,
+                allowCredentials: [{
                     type: "public-key",
-                    transports: ["internal"]
+                    transports: ["internal"] // ✅ Force l'utilisation de Face ID / Touch ID
                 }],
                 authenticatorSelection: { 
-                    authenticatorAttachment: "platform", // Force l'utilisation de Face ID / Touch ID
+                    authenticatorAttachment: "platform",
                     residentKey: "discouraged",
                     userVerification: "required"
                 }
             },
-            mediation: "optional" // Évite la demande de Passkey / QR Code
+            mediation: "optional"
         });
 
         if (credential) {
             alert("Authentification réussie !");
-            window.location.href = "/success.html"; // Redirection après succès
+            window.location.href = "/success.html"; // ✅ Redirection après succès
         }
     } catch (error) {
         console.error("Erreur d'authentification :", error);
