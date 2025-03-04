@@ -1,6 +1,5 @@
 document.getElementById("loginBtn").addEventListener("click", async function () {
     const errorMessage = document.getElementById("errorMessage");
-    errorMessage.textContent = "";
 
     if (!window.PublicKeyCredential) {
         errorMessage.textContent = "Votre appareil ne supporte pas l'authentification biométrique.";
@@ -8,32 +7,19 @@ document.getElementById("loginBtn").addEventListener("click", async function () 
     }
 
     try {
-        // ✅ Utilise un challenge généré de manière sécurisée
-        const challenge = new Uint8Array(32);
-        window.crypto.getRandomValues(challenge);
-
         const credential = await navigator.credentials.get({
             publicKey: {
-                challenge: challenge.buffer, // ✅ Utilise un ArrayBuffer valide
+                challenge: new Uint8Array(32),
                 timeout: 60000,
                 userVerification: "required",
-                rpId: window.location.hostname,
-                allowCredentials: [{
-                    type: "public-key",
-                    transports: ["internal"] // ✅ Force l'utilisation de Face ID / Touch ID
-                }],
-                authenticatorSelection: { 
-                    authenticatorAttachment: "platform",
-                    residentKey: "discouraged",
-                    userVerification: "required"
-                }
-            },
-            mediation: "optional"
+                rpId: window.location.hostname, // S'adapte au domaine actuel
+                allowCredentials: [] // Utilise un tableau vide pour éviter le QR Code
+            }
         });
 
         if (credential) {
             alert("Authentification réussie !");
-            window.location.href = "/success.html"; // ✅ Redirection après succès
+            window.location.href = "https://ton-site.com"; // Remplace par l'URL où tu veux rediriger
         }
     } catch (error) {
         console.error("Erreur d'authentification :", error);
